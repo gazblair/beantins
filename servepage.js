@@ -1,15 +1,17 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 
 var app = express();
 
-app.use(express.static('public'));
+app.use(bodyParser.json());
 
-//make way for some custom css, js and images
-app.use('/css', express.static(__dirname + '/public/css'));
-app.use('/js', express.static(__dirname + '/public/js'));
-app.use('/images', express.static(__dirname + '/public/images'));
+app.post('/api/register-user/', function(req, res) {
+    console.log(req.body.name)
+    console.log(req.body.phone)
+    res.sendStatus(201)
+})
 
 var server = app.listen(8081, function(){
-    var port = server.address().port;
-    console.log("Server started at http://localhost:%s", port);
+    var port = server.address().port
+    console.log("Server started at http://localhost:%s", port)
 });
