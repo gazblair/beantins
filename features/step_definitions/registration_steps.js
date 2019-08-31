@@ -33,13 +33,13 @@ When('I enter my details and send the register request', function () {
         const requestPromise = util.promisify(request);
         const response = await requestPromise(options);
 
-        this.setResponseTo(response.statusCode)
+        this.httpResponseCode = response.statusCode
     }
 
     return getRequest();
 });
 
 Then('I receive acknowledgement that my account was created', function () {
-    assert.equal(this.variable, 201)
+    assert.equal(this.httpResponseCode, 201)
     return 'then';
 });
