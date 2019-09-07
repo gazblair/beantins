@@ -12,7 +12,13 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "bento/ubuntu-16.04"
+  config.vm.box = "datashuttle/RWZ-Ubuntu-18.04LTS-DTP"
+
+  # Boot with a gui
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2048
+    v.gui = true
+  end
 
   #
   # Run Ansible from the Vagrant Host
