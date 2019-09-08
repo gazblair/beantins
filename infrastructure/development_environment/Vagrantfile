@@ -6,19 +6,22 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
-  # The most common configuration options are documented and commented below.
-  # For a complete reference, please see the online documentation at
-  # https://docs.vagrantup.com.
 
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "bento/ubuntu-16.04"
+  config.vm.box = "ubuntu/bionic64"
 
-  #
-  # Run Ansible from the Vagrant Host
-  #
+    # Provision software
   config.vm.provision "ansible_local" do |ansible|
     ansible.playbook = "playbook.yml"
   end
 
+  # Boot with a gui
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2048
+    v.gui = true
+  end
+
+  # Reboot for changes to take effect
+  config.vm.provision "shell", inline: <<-SHELL
+     shutdown -r now 
+  SHELL
 end
