@@ -3,4 +3,7 @@
   become: yes
 
   roles:
+      - ubuntugnome
       - nodejs
+      - visualstudiocode
+

@@ -1,0 +1,10 @@
+---
+- name: install the desktop
+  become: yes
+  apt: 
+    name: ubuntu-desktop
+    state: present
+    force_apt_get: True 
+- name: change to UK keyboard
+  shell: L='gb' && sudo sed -i 's/XKBLAYOUT=\"\w*"/XKBLAYOUT=\"'$L'\"/g' /etc/default/keyboard
+
