@@ -1,0 +1,14 @@
+---
+- name: Create directory for vscode state
+  remote_user: root
+  file:
+    path: "{{ vscode_state_path }}"
+    state: directory
+    mode: u=rwx,g=rwx,o=rwx
+
+- name: Create link to vscode state
+  file:
+    src: "{{ vscode_state_path }}"
+    dest: "{{ vscode_data_path }}"
+    state: link
+    mode: u=rwx,g=rwx,o=rwx

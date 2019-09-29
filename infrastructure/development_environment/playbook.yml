@@ -3,10 +3,13 @@
   become: yes
 
   roles:
+      - docker
+      - terraform
+      - visualstudiocode
       - smartgit
       - nodejs
-      - visualstudiocode
       - ubuntugnome
+      - ubuntuconfig
 
 
  
