@@ -3,7 +3,10 @@
   become: yes
 
   roles:
-      - ubuntugnome
+      - smartgit
       - nodejs
       - visualstudiocode
+      - ubuntugnome
 
+
+ 
