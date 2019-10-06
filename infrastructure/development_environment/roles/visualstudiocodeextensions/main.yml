@@ -1,0 +1,3 @@
+---
+- name: install cucumber vscode extension
+  command: code --install-extension alexkrechik.cucumberautocomplete
