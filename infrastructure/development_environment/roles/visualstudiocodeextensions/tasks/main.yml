@@ -1,3 +1,4 @@
 ---
 - name: install cucumber vscode extension
+  become_user: vagrant
   command: code --install-extension alexkrechik.cucumberautocomplete
