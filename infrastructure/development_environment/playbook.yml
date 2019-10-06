@@ -3,6 +3,7 @@
   become: yes
 
   roles:
+      - gcloudsdk
       - docker
       - terraform
       - visualstudiocode

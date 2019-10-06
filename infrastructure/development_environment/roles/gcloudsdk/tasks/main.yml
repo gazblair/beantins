@@ -1,0 +1,23 @@
+---
+- name: Import the APT repo key
+  apt_key:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+
+- name: Create the APT repository
+  apt_repository:
+    repo: "deb http://packages.cloud.google.com/apt cloud-sdk main"
+    filename: "google-cloud-sdk"
+    state: present
+
+- name: Install the application package
+  apt:
+    name: "google-cloud-sdk"
+    update_cache: yes
+
+- name: "Configure user configuration data to persistent drive"
+  become: yes
+  lineinfile: 
+    path: "/etc/profile"
+    line: export CLOUDSDK_CONFIG={{ persistent_data_drive_mount_path }}
+
+
