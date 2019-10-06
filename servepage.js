@@ -8,7 +8,15 @@ app.use(bodyParser.json());
 app.post('/api/register-user/', function(req, res) {
     console.log(req.body.name)
     console.log(req.body.phone)
-    res.sendStatus(201)
+    status = 201
+    message = ""
+    if (!req.body.phone)
+    {
+        message = "phone number is missing"
+        status = 400
+    }
+    
+    res.status(status).send(message)
 })
 
 var server = app.listen(8081, function(){

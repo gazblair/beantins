@@ -1,14 +1,14 @@
-const { Before, After, Given, When, Then } = require('cucumber')
+const { BeforeAll, AfterAll, Given, When, Then } = require('cucumber')
 
 const request = require('request')
 const assert = require('assert')
 const util = require('util')
 
-Before(function () {
+BeforeAll(function () {
     server = require('../../servepage.js')
 });
 
-After(function () {
+AfterAll(function () {
     server.close()
 });
 
@@ -39,7 +39,51 @@ When('I enter my details and send the register request', function () {
     return getRequest();
 });
 
-Then('I receive acknowledgement that my account was created', function () {
-    assert.equal(this.httpResponseCode, 201)
+When('I enter my name as {}', function (name) {
+
+    this.name = name
+});
+
+When('I enter my phone as {}', function (phone) {
+
+    this.phone = phone
+});
+
+When('I register as a new user', function () {
+
+    requestBody = {}
+    requestBody.name = this.name
+
+    if (this.phone) {
+        requestBody.phone = this.phone
+    }
+
+
+    var getRequest = async() => {
+        
+        const options = {
+            uri: 'http://localhost:8081/api/register-user',
+            method: 'POST',
+            json: requestBody
+        }
+
+        const requestPromise = util.promisify(request);
+        const response = await requestPromise(options);
+
+        this.httpResponseCode = response.statusCode
+        this.message = response.body
+    }
+
+    return getRequest();
+});
+
+
+Then('I receive a {int} response code', function (responseCode) {
+    assert.equal(responseCode, this.httpResponseCode)
+    return 'then';
+});
+
+Then('I receive a message that my {}', function (message) {
+    assert.equal(message, this.message)
     return 'then';
 });
