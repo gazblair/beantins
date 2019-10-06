@@ -5,11 +5,11 @@ const assert = require('assert')
 const util = require('util')
 
 Before(function () {
-    console.log('*** before ***')
+    server = require('../../servepage.js')
 });
 
 After(function () {
-    console.log('*** after ***');
+    server.close()
 });
 
 Given('I am not registered', function () {
