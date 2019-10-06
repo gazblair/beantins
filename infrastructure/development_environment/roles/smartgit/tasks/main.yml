@@ -7,3 +7,4 @@
   apt: 
     deb: "/tmp/{{ smartgit_version }}"
     force_apt_get: True
+

@@ -1,0 +1,7 @@
+---
+ - name: "Configure user configuration data to persistent drive"
+   become: yes
+   lineinfile: 
+     path: "/etc/profile"
+     line: export XDG_CONFIG_HOME={{ persistent_data_drive_mount_path }}
+

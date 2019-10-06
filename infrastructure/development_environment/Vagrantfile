@@ -1,27 +1,81 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
 Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/bionic64"
 
-    # Provision software
-  config.vm.provision "ansible_local" do |ansible|
-    ansible.playbook = "playbook.yml"
+  PERSISTENT_DATA_DRIVE_MOUNT_PATH = "/mnt/data"
+  PERSISTENT_DATA_DRIVE_DEVICE = "/dev/sdc"
+  PERSISTENT_DATA_DRIVE_FILE = 'persistentdata.vdi'
+  PERSISTENT_DATA_DRIVE_SIZE_IN_GIGABYTES = 1
+  VIRTUALBOX_INSTALL_PATH = 'C:\Program Files\Oracle\Virtualbox'
+
+  if not File.exist?(PERSISTENT_DATA_DRIVE_FILE)
+    config.vm.provider "virtualbox" do |virtualBoxSetup|
+      virtualBoxSetup.customize ['createhd', '--filename', PERSISTENT_DATA_DRIVE_FILE, '--size', PERSISTENT_DATA_DRIVE_SIZE_IN_GIGABYTES * 1024]
+      puts "Create persistent data drive"
+    end
   end
+
+  # Attach persistent data drive to ubuntu guest vm
+  config.vm.provider "virtualbox" do |virtualBoxSetup|
+    virtualBoxSetup.customize ['storageattach', :id, '--storagectl', 'SCSI', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', PERSISTENT_DATA_DRIVE_FILE]
+  end
+
+  # If not preexisting, format persistent data file system
+  if not File.exist?(PERSISTENT_DATA_DRIVE_FILE)
+    config.vm.provision "shell", inline: <<-SHELL
+      mkfs.ext4 #{PERSISTENT_DATA_DRIVE_DEVICE}
+    SHELL
+  end
+
+  # Mount persistent data drive
+  config.vm.provision "shell", path: "MountPersistentDataDrive.sh", env: {"Path"=> "#{VIRTUALBOX_INSTALL_PATH}"}, :args => [PERSISTENT_DATA_DRIVE_MOUNT_PATH, PERSISTENT_DATA_DRIVE_DEVICE]
 
   # Boot with a gui
-  config.vm.provider "virtualbox" do |v|
-    v.memory = 2048
-    v.gui = true
+  config.vm.provider "virtualbox" do |virtualBoxSetup|
+    virtualBoxSetup.memory = 2048
+    virtualBoxSetup.gui = true
   end
 
+  # Provision software
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "playbook.yml"
+
+    ansible.extra_vars = {
+      persistent_data_drive_mount_path: PERSISTENT_DATA_DRIVE_MOUNT_PATH
+    }
+  end
+  
   # Reboot for changes to take effect
   config.vm.provision "shell", inline: <<-SHELL
      shutdown -r now 
   SHELL
+
+  # Ensure persistence of persistent data drive when destroying VM
+  config.trigger.before :destroy do |trigger|
+    trigger.ruby do |env,machine|
+       require 'open3'
+       runningVMsCommandStdout, ignore, ignore = 
+      Open3.capture3({'Path' => "#{VIRTUALBOX_INSTALL_PATH}"}, 'VBoxManage list runningvms')
+
+       if not runningVMsCommandStdout.nil? and runningVMsCommandStdout.include? machine.id
+         puts ">>> Please shutdown your vm before attempting to destroy it...aborting!"
+         abort
+       else
+         puts "Detaching persistent data drive..."
+         detachCommandStdOut, detachCommandStdErr, detachCommandStatus = Open3.capture3({'Path' => "#{VIRTUALBOX_INSTALL_PATH}"}, "VBoxManage storageattach #{machine.id} --storagectl SCSI --port 2 --device 0 --type hdd --medium none")
+        
+         if detachCommandStatus.success?
+           puts detachCommandStdOut
+           puts "Detaching persistent drive succeeded"
+         else
+           puts detachCommandStdErr
+           puts "Detaching persistent drive failed"
+         end
+       end
+     end
+  end  
+
 end
