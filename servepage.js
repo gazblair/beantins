@@ -16,6 +16,12 @@ app.post('/api/register-user/', function(req, res) {
         status = 400
     }
     
+    if (!req.body.name)
+    {
+        message = "name is missing"
+        status = 400
+    }
+  
     res.status(status).send(message)
 })
 
