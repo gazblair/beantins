@@ -1,7 +1,7 @@
 ---
 - name: Download smartgit installation
   get_url: 
-    url: "https://www.syntevo.com/downloads/smartgit/{{ smartgit_version }}"
+    url: "https://www.syntevo.com/downloads/smartgit/smartgit-{{ smartgit_version }}.deb"
     dest: "/tmp/{{ smartgit_version }}"
 - name: "Install SmartGit"
   apt: 
