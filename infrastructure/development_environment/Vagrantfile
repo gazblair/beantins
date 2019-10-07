@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
 
   if not File.exist?(PERSISTENT_DATA_DRIVE_FILE)
     config.vm.provider "virtualbox" do |virtualBoxSetup|
-      virtualBoxSetup.customize ['createhd', '--filename', PERSISTENT_DATA_DRIVE_FILE, '--size', PERSISTENT_DATA_DRIVE_SIZE_IN_GIGABYTES * 1024]
+      virtualBoxSetup.customize ['createhd', '--filename', PERSISTENT_DATA_DRIVE_FILE, '--size', PERSISTENT_DATA_DRIVE_SIZE_IN_GIGABYTES * 1024, '--variant', 'Fixed']
       puts "Create persistent data drive"
     end
   end
