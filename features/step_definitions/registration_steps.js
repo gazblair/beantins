@@ -1,9 +1,13 @@
-const { BeforeAll, AfterAll, Given, When, Then } = require('cucumber')
+const { Before, BeforeAll, AfterAll, Given, When, Then } = require('cucumber')
 
 const request = require('request')
 const assert = require('assert')
 const util = require('util')
 const client = require('../../client.js')
+
+Before('@pending', function(scenario, callback) {
+    callback(null, 'pending')
+});
 
 BeforeAll(function () {
     server = require('../../server.js')
@@ -14,6 +18,11 @@ AfterAll(function () {
 });
 
 Given('I am not registered', function () {
+    // Write code here that turns the phrase above into concrete actions
+    return 'given';
+});
+
+Given('I have already registered', function () {
     // Write code here that turns the phrase above into concrete actions
     return 'given';
 });
