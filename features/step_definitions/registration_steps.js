@@ -3,9 +3,10 @@ const { BeforeAll, AfterAll, Given, When, Then } = require('cucumber')
 const request = require('request')
 const assert = require('assert')
 const util = require('util')
+const client = require('../../client.js')
 
 BeforeAll(function () {
-    server = require('../../servepage.js')
+    server = require('../../server.js')
 });
 
 AfterAll(function () {
@@ -15,28 +16,6 @@ AfterAll(function () {
 Given('I am not registered', function () {
     // Write code here that turns the phrase above into concrete actions
     return 'given';
-});
-
-When('I enter my details and send the register request', function () {
-
-    var getRequest = async() => {
-        
-        const options = {
-            uri: 'http://localhost:8081/api/register-user',
-            method: 'POST',
-            json: {
-              "name" : "Johab Morelli",
-              "phone" : "+44 19023 45345"
-            }
-        }
-
-        const requestPromise = util.promisify(request);
-        const response = await requestPromise(options);
-
-        this.httpResponseCode = response.statusCode
-    }
-
-    return getRequest();
 });
 
 When('I enter my name as {}', function (name) {
@@ -50,31 +29,12 @@ When('I enter my phone as {}', function (phone) {
 });
 
 When('I register as a new user', function () {
-
-    requestBody = {}
-    requestBody.name = this.name
-
-    if (this.phone) {
-        requestBody.phone = this.phone
-    }
-
-
-    var getRequest = async() => {
-        
-        const options = {
-            uri: 'http://localhost:8081/api/register-user',
-            method: 'POST',
-            json: requestBody
-        }
-
-        const requestPromise = util.promisify(request);
-        const response = await requestPromise(options);
-
-        this.httpResponseCode = response.statusCode
-        this.message = response.body
-    }
-
-    return getRequest();
+    let register = client.registerUser(this.name, this.phone, response => {
+        this.httpResponseCode = response.statusCode;
+        this.message = response.body;
+    });
+    
+    return register;
 });
 
 
