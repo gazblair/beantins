@@ -7,8 +7,8 @@
       - docker
       - terraform
       - visualstudiocode
-      - visualstudiocodeextensions
       - smartgit
       - nodejs
       - ubuntumate
       - ubuntuconfig
+      - visualstudiocodeextensions
