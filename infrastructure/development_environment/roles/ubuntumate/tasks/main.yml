@@ -2,7 +2,7 @@
 - name: install the desktop
   become: yes
   apt: 
-    name: ubuntu-desktop
+    name: ubuntu-mate-desktop
     state: present
     force_apt_get: True 
 - name: change to UK keyboard
