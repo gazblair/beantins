@@ -3,39 +3,33 @@ const bodyParser = require("body-parser");
 const userfactory = require('./userfactory')
 const userrepository = require('./userrepository')
 
-var app = express();
 const repo = new userrepository.userRepository();
+
+var app = express();
 
 app.use(bodyParser.json());
 
 app.post('/api/register-user/', function(req, res) {
-    console.log(req.body.name)
-    console.log(req.body.phone)
+    name = req.body.name
+    phone = req.body.phone
+
     status = 201
     message = ""
-    if (!req.body.phone)
-    {
-        message = "phone number is missing"
-        status = 400
+
+    try {
+        checkEligibleForRegistration(name, phone);
+
+        const user = userfactory.create(name, phone);
+
+        checkUserAccountDoesNotExist(user);
+        registerUser(user);
+ 
     }
-    
-    if (!req.body.name)
-    {
-        message = "name is missing"
-        status = 400
+    catch(err) {
+        status = err.status
+        message = err.message
     }
-    if (status == 201)
-    {
-        const user = userfactory.create(req.body.name, req.body.phone)
-        if (!repo.isRegistered(user)) {
-            repo.register(user)
-            status = 201
-        }
-        else {
-            message = "account already exists"
-            status = 409
-        }
-    }
+
     res.status(status).send(message)
 })
 
@@ -45,3 +39,27 @@ var server = app.listen(8081, function(){
 });
 
 module.exports = server;
+
+function registerUser(user) {
+    repo.register(user);
+}
+
+function throwException(message, status) {
+    throw({message, status})
+}
+
+function checkEligibleForRegistration(name, phone) {
+    if (!phone) {
+        throwException("phone number is missing", 400)
+    }
+    if (!name) {
+        throwException("name is missing", 400)
+    }
+}
+
+function checkUserAccountDoesNotExist(user) {
+    if (repo.isRegistered(user)){
+        throwException("account already exists", 409)
+    }
+}
+
