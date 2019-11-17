@@ -22,9 +22,13 @@ Given('I am not registered', function () {
     return 'given';
 });
 
-Given('I have already registered', function () {
-    // Write code here that turns the phrase above into concrete actions
-    return 'given';
+Given('I have already registered as {} and my phone number is {}', function (name, phone) {
+    let register = client.registerUser(name, phone, response => {
+        this.httpResponseCode = response.statusCode;
+        this.message = response.body;
+    });
+    
+    return register;
 });
 
 When('I enter my name as {}', function (name) {
