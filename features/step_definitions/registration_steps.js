@@ -52,11 +52,11 @@ When('I register as a new user', function () {
 
 
 Then('I receive a {int} response code', function (responseCode) {
-    assert.equal(responseCode, this.httpResponseCode)
+    assert.equal(this.httpResponseCode, responseCode)
     return 'then';
 });
 
 Then('I receive a message that my {}', function (message) {
-    assert.equal(message, this.message)
+    assert.equal(this.message, message)
     return 'then';
 });
