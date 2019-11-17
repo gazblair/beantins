@@ -33,6 +33,15 @@ app.post('/api/register-user/', function(req, res) {
     res.status(status).send(message)
 })
 
+app.post('/api/login-user/', function(req, res) {
+    phone = req.body.phone
+
+    status = 403
+    message = "account does not exist"
+
+    res.status(status).send(message)
+})
+
 var server = app.listen(8081, function(){
     let port = server.address().port
     console.log("Server started at http://localhost:%s", port)
