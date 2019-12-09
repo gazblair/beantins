@@ -1,0 +1,19 @@
+---
+- name: Install aws
+  become: yes
+  apt:
+    name: awscli
+    state: present
+    force_apt_get: True    
+- name: Install sam
+  become: yes
+  command: python3 -m pip install aws-sam-cli
+- name: "Configure aws config and credentials to persistent drive"
+  become: yes
+  lineinfile: 
+      dest: "/etc/profile"
+      line: '{{ item }}'
+  with_items:
+    - 'export AWS_CONFIG_FILE={{ persistent_data_drive_mount_path }}/.aws/config'
+    - 'export AWS_SHARED_CREDENTIALS_FILE={{ persistent_data_drive_mount_path }}/.aws/credentials'
+ 
