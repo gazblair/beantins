@@ -3,6 +3,8 @@
   become: yes
 
   roles:
+      - pip
+      - aws
       - gcloudsdk
       - docker
       - terraform
