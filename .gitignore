@@ -1,3 +1,5 @@
 node_modules/
 infrastructure/development_environment/.vagrant/
 **/*.vdi
+.aws-sam/
+output.yaml

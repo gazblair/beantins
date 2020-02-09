@@ -10,11 +10,9 @@ Before('@pending', function(scenario, callback) {
 });
 
 BeforeAll(function () {
-    server = require('../../server.js')
 });
 
 AfterAll(function () {
-    server.close()
 });
 
 When('I attempt to login', function () {

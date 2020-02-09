@@ -11,14 +11,13 @@ async function registerUser(name, phone, callback)
     }
             
     const options = {
-        uri: 'http://localhost:8081/api/register-user',
+        uri: 'https://tca9ti1o2m.execute-api.us-east-1.amazonaws.com/Prod/api/registeruser/',
         method: 'POST',
         json: requestBody
     }
 
     const requestPromise = util.promisify(request);
     const response = await requestPromise(options);
-
     callback(response);
 }
 

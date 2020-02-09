@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  app
+
+  Register user
+  
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  RegisterUserFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      AutoPublishAlias: Test
+      CodeUri: registeruser/
+      Handler: registeruserlambda.handler
+      Runtime: nodejs10.x
+      Events:
+        RegisterUser:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /api/registeruser
+            Method: post
+      Environment:
+        Variables:
+          AWS_STACK_NAME: { Ref: "AWS::StackName" }
+  DynamoDBTable: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - AttributeName: "Name"
+          AttributeType: "S"
+        - AttributeName: "Phone"
+          AttributeType: "S"
+      KeySchema: 
+        - AttributeName: "Phone"
+          KeyType: "HASH"
+        - AttributeName: "Name"
+          KeyType: "RANGE"          
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+      TableName: !Sub "Users_${AWS::StackName}"
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  RegisterUserApi:
+    Description: "API Gateway endpoint URL for Prod stage for Register User function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/api/registeruser/"
+  RegisterUserFunction:
+    Description: "Register User Lambda Function ARN"
+    Value: !GetAtt RegisterUserFunction.Arn
+  RegisterUserFunctionIamRole:
+    Description: "Implicit IAM Role created for Register User function"
+    Value: !GetAtt RegisterUserFunctionRole.Arn
