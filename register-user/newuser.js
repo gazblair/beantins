@@ -1,11 +1,13 @@
 "use strict"
 
-// const userfactory = require('./userfactory')
+const usersdynamodb = require('./usersdynamodb')
+const userfactory = require('./userfactory')
 
-class RegisterUser {
+class NewUser {
 
-    constructor(users){
-       this.users = users
+    constructor() {
+        const tableSuffix = process.env.AWS_STACK_NAME
+        this.users = new usersdynamodb.UsersDynamoDB(tableSuffix)
     }
 
     buildResponse(status, message) {
@@ -21,8 +23,6 @@ class RegisterUser {
         try
         {
             this.checkEligibleForRegistration(name, phone)
-
-    //     const user = userfactory.create(name, phone);
 
             await this.checkUserAccountDoesNotExist(name, phone)
             await this.users.register(name, phone)
@@ -54,5 +54,5 @@ class RegisterUser {
 }
 
 module.exports = {
-    RegisterUser: RegisterUser
+    NewUser: NewUser
 }

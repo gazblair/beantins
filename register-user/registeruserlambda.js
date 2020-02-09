@@ -1,7 +1,6 @@
 "use strict"
 
-const registeruser = require('./registeruser')
-const usersdynamodb = require('./usersdynamodb')
+const newuser = require('./newuser')
 
 /**
  *
@@ -17,9 +16,8 @@ const usersdynamodb = require('./usersdynamodb')
  */
 
 exports.handler = async (event) => {
-    const tableSuffix = process.env.AWS_STACK_NAME
-    const users = new usersdynamodb.UsersDynamoDB(tableSuffix)
-    const registerUser = new registeruser.RegisterUser(users)
+
+    const newUser = new newuser.NewUser()
 
     let result
     try {
@@ -28,7 +26,7 @@ exports.handler = async (event) => {
         let name = params.name
         let phone = params.phone
 
-        result = await registerUser.register(name, phone)
+        result = await newUser.register(name, phone)
     }
     catch(err) {
         console.log(JSON.stringify(err))
