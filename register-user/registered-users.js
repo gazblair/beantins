@@ -1,13 +1,12 @@
 "use strict"
 
-const usersdynamodb = require('./usersdynamodb')
-const userfactory = require('./userfactory')
+const registeredusersdao = require('./registered-users-dao')
 
-class NewUser {
+class RegisteredUsers {
 
     constructor() {
         const tableSuffix = process.env.AWS_STACK_NAME
-        this.users = new usersdynamodb.UsersDynamoDB(tableSuffix)
+        this.registeredusersdao = new registeredusersdao.RegisteredUsersDAO(tableSuffix)
     }
 
     buildResponse(status, message) {
@@ -19,13 +18,13 @@ class NewUser {
         }
     }
 
-    async register(name, phone){
+    async signUpNewUser(name, phone){
         try
         {
             this.checkEligibleForRegistration(name, phone)
 
             await this.checkUserAccountDoesNotExist(name, phone)
-            await this.users.register(name, phone)
+            await this.registeredusersdao.register(name, phone)
             return this.buildResponse(201, "user registered")
         }
         catch(err) {
@@ -47,12 +46,12 @@ class NewUser {
     }
 
     async checkUserAccountDoesNotExist(name, phone) {
-        if (await this.users.isRegistered(name, phone)){
+        if (await this.registeredusersdao.isRegistered(name, phone)){
             this.throwException("account already exists", 409)
         }
     }
 }
 
 module.exports = {
-    NewUser: NewUser
+    RegisteredUsers: RegisteredUsers
 }

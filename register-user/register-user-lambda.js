@@ -1,6 +1,6 @@
 "use strict"
 
-const newuser = require('./newuser')
+const registeredusers = require('./registered-users')
 
 /**
  *
@@ -17,16 +17,13 @@ const newuser = require('./newuser')
 
 exports.handler = async (event) => {
 
-    const newUser = new newuser.NewUser()
+    const registeredUsers = new registeredusers.RegisteredUsers()
 
     let result
     try {
-        let params = JSON.parse(event.body)
+        let user = JSON.parse(event.body)
 
-        let name = params.name
-        let phone = params.phone
-
-        result = await newUser.register(name, phone)
+        result = await registeredUsers.signUpNewUser(user.name, user.phone)
     }
     catch(err) {
         console.log(JSON.stringify(err))

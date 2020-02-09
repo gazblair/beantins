@@ -4,7 +4,7 @@ const AWS = require(`aws-sdk`);
 AWS.config.update({region: `us-east-1`});
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
-class UsersDynamoDB {
+class RegisteredUsersDAO {
     constructor(tableSuffix){
         this.tableSuffix = tableSuffix
     }
@@ -49,5 +49,5 @@ class UsersDynamoDB {
 }
 
 module.exports = {
-    UsersDynamoDB: UsersDynamoDB
+    RegisteredUsersDAO: RegisteredUsersDAO
 }

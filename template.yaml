@@ -16,7 +16,7 @@ Resources:
     Properties:
       AutoPublishAlias: Test
       CodeUri: register-user/
-      Handler: registeruserlambda.handler
+      Handler: register-user-lambda.handler
       Runtime: nodejs10.x
       Events:
         RegisterUser:
