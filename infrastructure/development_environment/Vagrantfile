@@ -35,8 +35,9 @@ Vagrant.configure("2") do |config|
 
   # Boot with a gui
   config.vm.provider "virtualbox" do |virtualBoxSetup|
-    virtualBoxSetup.memory = 2048
+    virtualBoxSetup.memory = 4096
     virtualBoxSetup.gui = true
+    virtualBoxSetup.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
   end
 
   # Provision software
