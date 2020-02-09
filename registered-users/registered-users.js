@@ -35,10 +35,13 @@ class RegisteredUsers {
     async loginUser(name, phone){
         try
         {
+            console.log("checkUserAccountExists")
             await this.checkUserAccountExists(name, phone)
+            console.log("buildResponse")
             return this.buildResponse(201, "user recognised")
         }
         catch(err) {
+            console.log("buildResponse error")
             return this.buildResponse(err.status, err.message)
         }
     }

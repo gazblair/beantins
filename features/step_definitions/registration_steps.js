@@ -51,7 +51,7 @@ Given('I am not registered', function () {
 });
 
 Given('I have already registered as {} and my phone number is {}', function (name, phone) {
-    let register = client.registerUser(name, phone, response => {
+    let register = client.signupNewUser(name, phone, response => {
         this.httpResponseCode = response.statusCode;
         this.message = response.body;
     });
@@ -70,7 +70,7 @@ When('I enter my phone as {}', function (phone) {
 });
 
 When('I register as a new user', function () {
-    let register = client.registerUser(this.name, this.phone, response => {
+    let register = client.signupNewUser(this.name, this.phone, response => {
         this.httpResponseCode = response.statusCode;
         this.message = response.body.message;
     });
