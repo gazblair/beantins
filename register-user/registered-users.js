@@ -32,6 +32,17 @@ class RegisteredUsers {
         }
     }
 
+    async loginUser(name, phone){
+        try
+        {
+            await this.checkUserAccountExists(name, phone)
+            return this.buildResponse(201, "user recognised")
+        }
+        catch(err) {
+            return this.buildResponse(err.status, err.message)
+        }
+    }
+
     throwException(message, status) {
         throw({message, status})
     }
@@ -42,6 +53,12 @@ class RegisteredUsers {
         }
         if (!name) {
             this.throwException("name is missing", 400)
+        }
+    }
+
+    async checkUserAccountExists(name, phone) {
+        if (!await this.registeredusersdao.isRegistered(name, phone)){
+            this.throwException("account does not exist", 403)
         }
     }
 

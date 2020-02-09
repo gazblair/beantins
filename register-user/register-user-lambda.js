@@ -23,7 +23,18 @@ exports.handler = async (event) => {
     try {
         let user = JSON.parse(event.body)
 
-        result = await registeredUsers.signUpNewUser(user.name, user.phone)
+        console.log("here's the event:")
+        console.log(JSON.stringify(event))
+
+        switch(event.path)
+        {
+            case "/api/loginuser/":
+                result = await registeredUsers.loginUser(user.name, user.phone)
+                break
+            case "/api/registeruser/":
+                result = await registeredUsers.signUpNewUser(user.name, user.phone)
+                break
+        }        
     }
     catch(err) {
         console.log(JSON.stringify(err))

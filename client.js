@@ -29,7 +29,7 @@ async function loginUser(phone, callback)
         requestBody.phone = phone
     }
     const options = {
-        uri: 'http://localhost:8081/api/login-user',
+        uri: 'https://tca9ti1o2m.execute-api.us-east-1.amazonaws.com/Prod/api/loginuser/',
         method: 'POST',
         json: requestBody
     }
