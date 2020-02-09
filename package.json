@@ -1,0 +1,21 @@
+{
+  "name": "node-servepage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "registeruser.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.596.0",
+    "body-parser": "^1.19.0",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "cucumber": "^5.1.0",
+    "grunt": "^1.0.4"
+  }
+}

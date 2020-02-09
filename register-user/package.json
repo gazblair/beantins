@@ -1,21 +1,23 @@
 {
-  "name": "node-servepage",
+  "name": "register-user",
   "version": "1.0.0",
-  "description": "",
+  "description": "Registers a user of the messenger service",
   "main": "registeruser.js",
+  "dependencies": {
+    "aws-sdk": "^2.596.0"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "aws-sdk": "^2.596.0",
-    "body-parser": "^1.19.0",
-    "request": "^2.88.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doctor-claw/nodetest.git"
   },
-  "devDependencies": {
-    "cucumber": "^5.1.0",
-    "grunt": "^1.0.4"
-  }
+  "author": "Derek Charles & Gary Blair",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/doctor-claw/nodetest/issues"
+  },
+  "homepage": "https://github.com/doctor-claw/nodetest#readme"
 }
