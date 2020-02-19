@@ -28,11 +28,11 @@ exports.handler = async (event) => {
 
         switch(event.path)
         {
-            case "/api/login-user/":
+            case "/login-user/":
                 console.log("prepare to login")
                 result = await registeredUsers.loginUser(user.name, user.phone)
                 break
-            case "/api/signup-new-user/":
+            case "/signup-new-user/":
                 result = await registeredUsers.signUpNewUser(user.name, user.phone)
                 break
         }        

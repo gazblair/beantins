@@ -5,7 +5,7 @@ const registeredusersdao = require('./registered-users-dao')
 class RegisteredUsers {
 
     constructor() {
-        const tableSuffix = process.env.AWS_STACK_NAME
+        const tableSuffix = process.env.AWS_STAGE
         this.registeredusersdao = new registeredusersdao.RegisteredUsersDAO(tableSuffix)
     }
 
