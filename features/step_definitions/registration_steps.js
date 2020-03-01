@@ -1,6 +1,6 @@
 const { Before, BeforeAll, AfterAll, Given, When, Then } = require('cucumber')
 
-const userTableName = "Users_sam-test-1"
+const userTableName = "Users_Dev"
 const request = require('request')
 const assert = require('assert')
 const util = require('util')

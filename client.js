@@ -1,7 +1,7 @@
 const request = require('request')
 const util = require('util')
 
-const lambdaUrlRoot = 'https://4wl88pf8u1.execute-api.us-east-1.amazonaws.com/Prod/'
+const lambdaUrlRoot = 'https://eqlfyltr01.execute-api.us-east-1.amazonaws.com/Dev/'
 async function signupNewUser(name, phone, callback)
 {
     requestBody = {}
@@ -12,7 +12,7 @@ async function signupNewUser(name, phone, callback)
     }
             
     const options = {
-        uri: lambdaUrlRoot + 'api/signup-new-user/',
+        uri: lambdaUrlRoot + 'signup-new-user/',
         method: 'POST',
         json: requestBody
     }
@@ -30,7 +30,7 @@ async function loginUser(phone, callback)
         requestBody.phone = phone
     }
     const options = {
-        uri: lambdaUrlRoot + 'api/login-user/',
+        uri: lambdaUrlRoot + 'login-user/',
         method: 'POST',
         json: requestBody
     }
