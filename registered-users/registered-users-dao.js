@@ -1,11 +1,11 @@
 "use strict"
 
-const AWS = require(`aws-sdk`);
-AWS.config.update({region: `us-east-1`});
-const dynamo = new AWS.DynamoDB.DocumentClient();
+const dynamodbfactory = require('./dynamodb-factory');
 
 class RegisteredUsersDAO {
     constructor(tableSuffix){
+        this.dynamoDB = dynamodbfactory.create()
+
         this.tableSuffix = tableSuffix
     }
     buildTableName(){
@@ -23,7 +23,7 @@ class RegisteredUsersDAO {
 
         let phoneExists = false
         try{
-            let result = await dynamo.query(params).promise()
+            let result = await this.dynamoDB.query(params).promise()
             phoneExists = result.Count > 0
         }
         catch(err){
@@ -36,7 +36,7 @@ class RegisteredUsersDAO {
     register(name, phone) {
         let tableentry = this.buildTableEntry(name, phone)
 
-        return dynamo.put(tableentry).promise();
+        return this.dynamoDB.put(tableentry).promise();
     }
 
     buildTableEntry(name, phone){
