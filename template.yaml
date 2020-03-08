@@ -42,6 +42,7 @@ Resources:
       Environment:
         Variables:
           AWS_STAGE: { Ref: "AppStage" }
+          DYNAMODB_ENDPOINT: "null" 
   WebApi:
     Type: AWS::Serverless::Api
     Properties: 

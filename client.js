@@ -1,7 +1,7 @@
 const request = require('request')
 const util = require('util')
 
-const lambdaUrlRoot = 'https://eqlfyltr01.execute-api.us-east-1.amazonaws.com/Dev/'
+const lambdaUrlRoot = process.env.LAMBDA_URL_ROOT 
 async function signupNewUser(name, phone, callback)
 {
     requestBody = {}
@@ -10,7 +10,7 @@ async function signupNewUser(name, phone, callback)
     if (phone) {
         requestBody.phone = phone
     }
-            
+          
     const options = {
         uri: lambdaUrlRoot + 'signup-new-user/',
         method: 'POST',

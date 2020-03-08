@@ -1,22 +1,17 @@
 const { Before, BeforeAll, AfterAll, Given, When, Then } = require('cucumber')
 
 const userTableName = "Users_Dev"
-const request = require('request')
 const assert = require('assert')
-const util = require('util')
 const client = require('../../client.js')
-const AWS = require('aws-sdk');
-AWS.config.update({region: 'us-east-1'});
-var documentClient = new AWS.DynamoDB.DocumentClient();
+const dynamodbfactory = require('../../registered-users/dynamodb-factory.js');
 
 async function clearUsers()
 {
     const queryTableName = {
         TableName: userTableName
     };
-
-    let scanResults = [];
-    let items =  await documentClient.scan(queryTableName).promise()
+    var dynamoDB = dynamodbfactory.create()
+    let items =  await dynamoDB.scan(queryTableName).promise()
 
     items.Items.forEach(async function(item) {
 
@@ -27,7 +22,7 @@ async function clearUsers()
 
         console.log(JSON.stringify(userRecord))
         
-        await documentClient.delete(userRecord).promise()
+        await dynamoDB.delete(userRecord).promise()
     })
 } 
 
