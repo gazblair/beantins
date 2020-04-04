@@ -11,9 +11,12 @@ if ! [[ $(sudo docker network ls --filter name=local-dev) ]]; then
    sudo docker network create local-dev
 fi
 
-if ! [[ $(sudo docker ps -a --filter name=local-dynamodb) ]]; then
-   sudo docker run --name=local-dynamodb --network local-dev --network-alias=dynamodb -p 8000:8000 amazon/dynamodb-local -d
+mapfile -t outputLines < <(sudo docker ps -a --filter name=local-dynamodb)
+if ! [[ ${outputLines[1]} ]]; then
+   echo "--- Firing up a fresh dynamodb instance"
+   sudo docker run -d --name=local-dynamodb --network local-dev --network-alias=dynamodb -p 8000:8000 amazon/dynamodb-local
 else
+   echo "--- Restarting dynamodb"
    sudo docker restart local-dynamodb 
 fi
 
