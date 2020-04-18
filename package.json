@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "cucumber": "^5.1.0",
+    "dockerode": "^3.2.0",
     "grunt": "^1.0.4"
   }
 }
