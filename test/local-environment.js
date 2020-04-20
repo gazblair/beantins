@@ -3,29 +3,45 @@
 var Docker = require('dockerode');
 var docker = new Docker({socketPath: '/var/run/docker.sock'});
 
-// Stop dynamoDB container
-docker.listContainers({filters: {"name":["local-dynamodb"]} }).then(function(containers) {
-    console.log(containers)
-    containers.forEach(function (containerInfo) {
-        var container = docker.getContainer(containerInfo.Id)
-        container.stop()
-        .then(function (containerInfo){
-            container.remove()
-        })
-        .then(function (resolve){
-            console.log("removing network")
-            var localNetwork = docker.getNetwork('local-dev')
+async function cleanUpDynamoDB(){
+    try{
+        let containers = await docker.listContainers({filters: {"name":["local-dynamodb"]} })
+        console.log("Search for dynamoDB container found...")
+        console.log(containers)
 
-            localNetwork.remove().then(function (resolve) {
-                console.log("Resolved!")
-                console.log(resolve)
-            }, function (reject) {
-                console.log("REJECTED!")
-                console.log(reject)
-        });
-  })}
-  , function(reject) {
-    console.log("REJECTED!")
-    console.log(reject)
-})
-})
+        if (containers.length == 1){
+            console.log("removing dynamoDB container")
+            var container = docker.getContainer(containers[0].Id)
+            await container.stop()
+            await container.remove()
+        }
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+
+async function cleanUpLocalNetwork(){
+    try{
+        console.log("Search for local network found...")
+        let networks = await docker.listNetworks({filters: {"name":["local-dev"]} })
+        console.log(networks)
+        if (networks.length == 1){
+            console.log("removing local-dev network")
+            var localNetwork = docker.getNetwork(networks[0].Id)
+            await localNetwork.remove()
+        }
+    }
+    catch(error){
+        console.log(error)
+    }
+}
+
+async function CleanUp()
+{
+    await cleanUpDynamoDB()
+    await cleanUpLocalNetwork()
+}
+
+CleanUp()
+
