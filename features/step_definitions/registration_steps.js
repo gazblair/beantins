@@ -36,8 +36,9 @@ Before(function () {
     
 });
 
-const timeoutInMilliseconds = 10 * 1000
+const timeoutInMilliseconds = 180 * 1000
 
+// Can take some time on a fresh machine where docker image has to be pulled
 BeforeAll({timeout: timeoutInMilliseconds}, function () {
     this.localTestSession = new localTestSession.LocalTestSession()
 

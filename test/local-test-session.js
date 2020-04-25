@@ -4,21 +4,11 @@ var Docker = require('dockerode');
 var docker = new Docker({socketPath: '/var/run/docker.sock'});
 var AWS = require('aws-sdk');
 const winston = require('winston');
-const logger = winston.createLogger({
+const logger =  winston.createLogger({
     transports: [
-        new winston.transports.Console({ level: 'error' }),
-        new winston.transports.File({ filename: 'info.log', level: 'info' }),
-    ]
-})
-
-transports: [
-    //
-    // - Write all logs with level `error` and below to `error.log`
-    // - Write all logs with level `info` and below to `combined.log`
-    //
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' })
-  ]
+        new winston.transports.Console({ level: 'info' }),
+        new winston.transports.File({ filename: 'log.txt', level: 'verbose' }),
+    ]})
 
 class LocalTestSession {
 
@@ -26,16 +16,44 @@ class LocalTestSession {
         logger.info("Setup local network...")
         try{
             await docker.createNetwork({"Name":"local-dev"}) 
-            logger.info("Created network local-dev")
+            logger.verbose("Created network local-dev")
         }
         catch(error){
-            logger.info("Failed to create network local-dev - " + error)
+            logger.error("Failed to create network local-dev - " + error)
         }
     }
-    
-    invokeSetupDynamoDB(success, failure){
+
+    pullImage(image = 'node', version = 'latest') {
+        this.imageName = `${image}:${version}`;
+        logger.info(`=> Pulling ${this.imageName}`);
+        return new Promise((resolve, reject) => {
+          docker.pull(this.imageName, (error, stream) => {
+            let message = '';
+            if(error)
+            { 
+                logger.error("Failed to pull docker image" + image + " because of error:" + error)
+                return reject(err)
+            }
+            stream.on('data', data => message += data);
+            stream.on('end', () => resolve(message));
+            stream.on('error', err => reject(err));
+          });
+        });
+      }
+
+    async pullLambdaContainer(){
+        return await this.pullImage('lambci\/lambda', 'nodejs10.x')
+    }
+
+    async invokeSetupDynamoDB(success, failure){
         logger.info("Setup dynamoDB instance...")
         try{
+            logger.verbose("Retrieve latest dynamo DB container...")
+
+            await this.pullImage("amazon/dynamodb-local", "latest")
+
+            logger.verbose("Retrieved DynamoDB container")
+                
             docker.createContainer({ 
                 Image: 'amazon/dynamodb-local', 
                 name: 'local-dynamodb', 
@@ -49,20 +67,20 @@ class LocalTestSession {
                 },
                 PortBindings: { "8000/tcp": [{ "HostPort": "8000" }] } }, async function (err,container){
                     if (err) {
-                        logger.info("Error", err);
+                        logger.verbose("Error", err);
                         failure()
                     }
                     else {
-                        logger.info("DynamoDB instance created");
+                        logger.verbose("DynamoDB instance created");
 
                         await container.start()
-                        logger.info("DynamoDB instance started")
+                        logger.verbose("DynamoDB instance started")
                         success()
                     }
               })
         }
         catch(error){
-            logger.error(error)
+            logger.error("DynamoDB setup failed - " + error)
             failure()
         }
     }
@@ -114,13 +132,14 @@ class LocalTestSession {
         }
         };
     
+
         ddb.createTable(params, function (err, data) {
             if (err) {
                 logger.error("Error", err);
                 failure()
             }
             else {
-                logger.info("Table Created", data);
+                logger.verbose("Table Created", data);
                 success()
              }
         })
@@ -139,17 +158,20 @@ class LocalTestSession {
     invokeLambda(successCallback, errorCallback) {
         const { spawn } = require('child_process');
         this.samLocalProcess = spawn('sam', ["local", "start-api", "--docker-network", "local-dev", "--env-vars", "localEnvironment.json", "--template-file", "template.yaml"])
+        logger.info("Launching lambda")
 
         this.samLocalProcess.stderr.on('data', (data) => {
-            logger.info(`lambda process:${data}`)
+            logger.verbose(`lambda process:${data}`)
             if (data.includes("CTRL+C")){
-                logger.info("Lambda up and running...")
+                logger.verbose("Lambda up and running...")
                 successCallback()
             }
         })
     }
 
-    setupLambda(){
+    async setupLambda(){
+        await this.pullLambdaContainer()
+
         return new Promise((resolve, reject) => {
             this.invokeLambda((successResponse) => {
                 resolve();
@@ -162,11 +184,11 @@ class LocalTestSession {
     async cleanUpDynamoDB(){
         try{
             let containers = await docker.listContainers({filters: {"name":["local-dynamodb"]}, all: true })
-            logger.info("Search for dynamoDB container found...")
-            logger.info(containers)
+            logger.verbose("Search for dynamoDB container found...")
+            logger.verbose(containers)
     
             if (containers.length > 0){
-                logger.info("removing dynamoDB container")
+                logger.info("removing dynamoDB container...")
                 var container = docker.getContainer(containers[0].Id)
                 try{
                     await container.stop()
@@ -186,18 +208,18 @@ class LocalTestSession {
     
     async cleanUpLocalNetwork(){
         try{
-            logger.info("Search for local network found...")
+            logger.verbose("Search for local network found...")
             let networks = await docker.listNetworks({filters: {"name":["local-dev"]} })
-            logger.info(networks)
+            logger.verbose(networks)
             if (networks.length > 0){
                 logger.info("removing local-dev network")
                 var localNetwork = docker.getNetwork(networks[0].Id)
                 await localNetwork.remove()
-                logger.info("Local network removed")
+                logger.verbose("Local network removed")
             }
             else
             {
-                logger.info("No local network found")
+                logger.verbose("No local network found")
             }
         }
         catch(error){
