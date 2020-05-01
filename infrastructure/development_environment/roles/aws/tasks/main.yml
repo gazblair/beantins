@@ -8,12 +8,13 @@
 - name: Install sam
   become: yes
   command: python3 -m pip install aws-sam-cli
-- name: "Configure aws config and credentials to persistent drive"
+- name: Check stats on aws config and credentials on persistent drive
+  stat: 
+    path: "{{ persistent_data_drive_mount_path }}/.aws"
+  register: aws_credentials_path
+- name: If present on persistent drive, copy aws config and credentials to home directory
   become: yes
-  lineinfile: 
-      dest: "/etc/profile"
-      line: '{{ item }}'
-  with_items:
-    - 'export AWS_CONFIG_FILE={{ persistent_data_drive_mount_path }}/.aws/config'
-    - 'export AWS_SHARED_CREDENTIALS_FILE={{ persistent_data_drive_mount_path }}/.aws/credentials'
- 
+  copy: 
+    src: "{{ persistent_data_drive_mount_path }}/.aws" 
+    dest: "/home/{{ vm_user_name}}"
+  when: aws_credentials_path.stat.exists and aws_credentials_path.stat.isdir 

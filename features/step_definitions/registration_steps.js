@@ -4,6 +4,7 @@ const userTableName = "Users_Dev"
 const assert = require('assert')
 const client = require('../../client.js')
 const dynamodbfactory = require('../../registered-users/dynamodb-factory.js');
+const localTestSession = require('../../test/local-test-session.js')
 
 async function clearUsers()
 {
@@ -32,12 +33,20 @@ Before('@pending', function(scenario, callback) {
 
 Before(function () {
     return clearUsers()
+    
 });
 
-BeforeAll(function () {
+const timeoutInMilliseconds = 180 * 1000
+
+// Can take some time on a fresh machine where docker image has to be pulled
+BeforeAll({timeout: timeoutInMilliseconds}, function () {
+    this.localTestSession = new localTestSession.LocalTestSession()
+
+    return this.localTestSession.start()
 });
 
 AfterAll(function () {
+    return this.localTestSession.stop()
 });
 
 Given('I am not registered', function () {

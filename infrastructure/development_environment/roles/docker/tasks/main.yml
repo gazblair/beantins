@@ -11,3 +11,6 @@
 - name: Enable docker service
   become: yes
   command: systemctl enable docker
+- name: Allow normal user access to docker
+  become: yes
+  command: "usermod -aG docker {{vm_user_name}}"
