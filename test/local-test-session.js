@@ -3,12 +3,7 @@
 var Docker = require('dockerode');
 var docker = new Docker({socketPath: '/var/run/docker.sock'});
 var AWS = require('aws-sdk');
-const winston = require('winston');
-const logger =  winston.createLogger({
-    transports: [
-        new winston.transports.Console({ level: 'info' }),
-        new winston.transports.File({ filename: 'log.txt', level: 'verbose' }),
-    ]})
+const logger = require('../test/logger');
 
 class LocalTestSession {
 
@@ -32,11 +27,11 @@ class LocalTestSession {
             if(error)
             { 
                 logger.error("Failed to pull docker image" + image + " because of error:" + error)
-                return reject(err)
+                return reject(error)
             }
             stream.on('data', data => message += data);
             stream.on('end', () => resolve(message));
-            stream.on('error', err => reject(err));
+            stream.on('error', error => reject(error));
           });
         });
       }
@@ -155,17 +150,34 @@ class LocalTestSession {
         })
     }
 
+    buildLambdaParameters() {
+
+        let parameters = ["local", "start-api", "--docker-network", "local-dev", "--env-vars", "localEnvironment.json", "--template-file", "template.yaml", "--skip-pull-image"]
+
+        if (process.env.DEBUG_PORT != null){
+            parameters.push("-d", process.env.DEBUG_PORT) 
+        }
+
+        logger.verbose("Lambda parameters - " + parameters)
+
+        return parameters
+    }
+
     invokeLambda(successCallback, errorCallback) {
         const { spawn } = require('child_process');
-        this.samLocalProcess = spawn('sam', ["local", "start-api", "--docker-network", "local-dev", "--env-vars", "localEnvironment.json", "--template-file", "template.yaml"])
+        this.samLocalProcess = spawn('sam', this.buildLambdaParameters())
         logger.info("Launching lambda")
 
         this.samLocalProcess.stderr.on('data', (data) => {
-            logger.verbose(`lambda process:${data}`)
+            logger.info(data)
             if (data.includes("CTRL+C")){
                 logger.verbose("Lambda up and running...")
                 successCallback()
             }
+        })
+
+        this.samLocalProcess.stdout.on('data', (data) => {
+            logger.info(data)
         })
     }
 

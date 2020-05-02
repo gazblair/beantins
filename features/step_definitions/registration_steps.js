@@ -2,9 +2,10 @@ const { Before, BeforeAll, AfterAll, Given, When, Then } = require('cucumber')
 
 const userTableName = "Users_Dev"
 const assert = require('assert')
-const client = require('../../client.js')
-const dynamodbfactory = require('../../registered-users/dynamodb-factory.js');
-const localTestSession = require('../../test/local-test-session.js')
+const client = require('../../client')
+const dynamodbfactory = require('../../registered-users/dynamodb-factory');
+const sessionFactory = require('../../test/session-factory')
+const logger=require('../../test/logger')
 
 async function clearUsers()
 {
@@ -21,7 +22,7 @@ async function clearUsers()
             Key: item
         };
 
-        console.log(JSON.stringify(userRecord))
+        logger.verbose("Clearing user - " + JSON.stringify(userRecord))
         
         await dynamoDB.delete(userRecord).promise()
     })
@@ -36,17 +37,18 @@ Before(function () {
     
 });
 
+
 const timeoutInMilliseconds = 180 * 1000
 
 // Can take some time on a fresh machine where docker image has to be pulled
 BeforeAll({timeout: timeoutInMilliseconds}, function () {
-    this.localTestSession = new localTestSession.LocalTestSession()
+     this.testSession = sessionFactory.create()
 
-    return this.localTestSession.start()
+     return this.testSession.start()
 });
 
 AfterAll(function () {
-    return this.localTestSession.stop()
+     return this.testSession.stop()
 });
 
 Given('I am not registered', function () {
@@ -56,6 +58,7 @@ Given('I am not registered', function () {
 
 Given('I have already registered as {} and my phone number is {}', function (name, phone) {
     let register = client.signupNewUser(name, phone, response => {
+        logger.verbose("Signup new user has response - " + JSON.stringify(response))
         this.httpResponseCode = response.statusCode;
         this.message = response.body;
     });
@@ -75,6 +78,7 @@ When('I enter my phone as {}', function (phone) {
 
 When('I register as a new user', function () {
     let register = client.signupNewUser(this.name, this.phone, response => {
+        logger.verbose("Signup new user has response - " + response)        
         this.httpResponseCode = response.statusCode;
         this.message = response.body.message;
     });

@@ -1,0 +1,3 @@
+sam build
+sam package --s3-bucket longmorn --output-template-file output.yaml
+
