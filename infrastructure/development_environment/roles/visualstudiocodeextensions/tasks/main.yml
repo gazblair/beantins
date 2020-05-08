@@ -1,4 +1,0 @@
----
-- name: install cucumber vscode extension
-  become_user: "{{vm_user_name}}"
-  command: code --install-extension alexkrechik.cucumberautocomplete

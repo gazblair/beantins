@@ -1,2 +1,0 @@
-vscode_state_path: "{{ persistent_data_drive_mount_path }}/vscode"
-vscode_data_path: "/usr/share/code/data"

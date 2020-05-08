@@ -1,4 +1,0 @@
----
-NODEJS_VERSION: "13"
-ansible_distribution_release: "xenial" #trusty
-  
