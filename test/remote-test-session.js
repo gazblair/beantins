@@ -8,7 +8,7 @@ const logger=require('../test/logger')
 class RemoteTestSession {
 
     retrieveTemplateFile(){
-        let templateFile = "output.yaml"
+        let templateFile = "registration.yaml"
         if (process.env.SAM_TEMPLATE_FILE != "null"){
             templateFile = process.env.SAM_TEMPLATE_FILE
         }   
@@ -16,7 +16,7 @@ class RemoteTestSession {
     }
 
     retrieveStackName(){
-        let stackName = "messenger"
+        let stackName = "BeanTinsRegistration"
         if (process.env.SAM_STACK_NAME != "null"){
             stackName = process.env.SAM_STACK_NAME
         }   

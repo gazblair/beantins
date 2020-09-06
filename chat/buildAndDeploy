@@ -1,0 +1,3 @@
+./build
+sam deploy --template-file chat.yaml --stack-name BeanTinsChat --capabilities CAPABILITY_IAM
+

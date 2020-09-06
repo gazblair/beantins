@@ -1,0 +1,3 @@
+./build
+sam deploy --template-file registration.yaml --stack-name BeanTinsRegistration --capabilities CAPABILITY_IAM
+

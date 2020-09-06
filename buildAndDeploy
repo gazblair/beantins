@@ -1,4 +1,0 @@
-sam build
-sam package --s3-bucket longmorn --output-template-file output.yaml
-sam deploy --template-file output.yaml --stack-name messenger --capabilities CAPABILITY_IAM
-

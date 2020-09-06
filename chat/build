@@ -1,0 +1,3 @@
+sam build
+sam package --s3-bucket beantins --output-template-file chat.yaml
+

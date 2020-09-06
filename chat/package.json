@@ -19,6 +19,7 @@
     "cucumber": "^5.1.0",
     "dockerode": "^3.2.0",
     "grunt": "^1.0.4",
+    "socket.io-client": "^2.3.0",
     "winston": "^3.2.1"
   }
 }

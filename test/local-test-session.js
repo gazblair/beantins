@@ -60,9 +60,9 @@ class LocalTestSession {
                         }
                     }
                 },
-                PortBindings: { "8000/tcp": [{ "HostPort": "8000" }] } }, async function (err,container){
-                    if (err) {
-                        logger.verbose("Error", err);
+                PortBindings: { "8000/tcp": [{ "HostPort": "8000" }] } }, async function (error,container){
+                    if (error) {
+                        logger.verbose("Error", error);
                         failure()
                     }
                     else {
@@ -128,9 +128,9 @@ class LocalTestSession {
         };
     
 
-        ddb.createTable(params, function (err, data) {
-            if (err) {
-                logger.error("Error", err);
+        ddb.createTable(params, function (error, data) {
+            if (error) {
+                logger.error("Error", error);
                 failure()
             }
             else {

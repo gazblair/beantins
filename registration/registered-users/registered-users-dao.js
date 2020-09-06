@@ -8,9 +8,11 @@ class RegisteredUsersDAO {
 
         this.tableSuffix = tableSuffix
     }
+
     buildTableName(){
         return "Users_" + this.tableSuffix
     }
+    
     async isRegistered(name, phone) {
 
         var params = {
