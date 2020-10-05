@@ -7,10 +7,18 @@ Description: >
   functions needed to demonstrate the Websocket protocol on API Gateway.
 
 Parameters:
-  TableName:
+  OnlineUsersTableName:
     Type: String
-    Default: 'simplechat_connections'
+    Default: 'Chat_OnlineUsers'
     Description: (Required) The name of the new DynamoDB to store connection identifiers for each connected clients. Minimum 3 characters
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z_]+$
+    ConstraintDescription: 'Required. Can be characters and underscore only. No numbers or special characters allowed.'
+  RegisteredUsersTableName:
+    Type: String
+    Default: 'Chat_RegisteredUsers'
+    Description: (Required) The name of the new DynamoDB to store user identifiers for each registered user. Minimum 3 characters
     MinLength: 3
     MaxLength: 50
     AllowedPattern: ^[A-Za-z_]+$
@@ -98,21 +106,40 @@ Resources:
       Description: Prod Stage
       DeploymentId: !Ref Deployment
       ApiId: !Ref SimpleChatWebSocket
-  ConnectionsTable:
+  OnlineUsersTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
+      - AttributeName: "userId"
+        AttributeType: "S"
       - AttributeName: "connectionId"
+        AttributeType: "S"        
+      KeySchema:
+      - AttributeName: "userId"
+        KeyType: "HASH"
+      - AttributeName: "connectionId"
+        KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: True
+      TableName: !Ref OnlineUsersTableName
+  RegisteredUsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: "userId"
         AttributeType: "S"
       KeySchema:
-      - AttributeName: "connectionId"
+      - AttributeName: "userId"
         KeyType: "HASH"
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
       SSESpecification:
         SSEEnabled: True
-      TableName: !Ref TableName
+      TableName: !Ref RegisteredUsersTableName
   OnConnectFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -122,10 +149,12 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          ONLINE_USERS_TABLE_NAME: !Ref OnlineUsersTableName
       Policies:
       - DynamoDBCrudPolicy:
-          TableName: !Ref TableName
+          TableName: !Ref OnlineUsersTableName
+      - DynamoDBCrudPolicy:
+          TableName: !Ref RegisteredUsersTableName
   OnConnectPermission:
     Type: AWS::Lambda::Permission
     DependsOn:
@@ -143,10 +172,10 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          TABLE_NAME: !Ref OnlineUsersTableName
       Policies:
       - DynamoDBCrudPolicy:
-          TableName: !Ref TableName
+          TableName: !Ref OnlineUsersTableName
   OnDisconnectPermission:
     Type: AWS::Lambda::Permission
     DependsOn:
@@ -164,10 +193,10 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          TABLE_NAME: !Ref OnlineUsersTableName
       Policies:
       - DynamoDBCrudPolicy:
-          TableName: !Ref TableName
+          TableName: !Ref OnlineUsersTableName
       - Statement:
         - Effect: Allow
           Action:
@@ -184,9 +213,13 @@ Resources:
       Principal: apigateway.amazonaws.com
 
 Outputs:
-  ConnectionsTableArn:
-    Description: "Connections table ARN"
-    Value: !GetAtt ConnectionsTable.Arn
+  OnlineUsersTableArn:
+    Description: "Online users table ARN"
+    Value: !GetAtt OnlineUsersTable.Arn
+
+  RegisteredUsersTableArn:
+    Description: "Registered users table ARN"
+    Value: !GetAtt RegisteredUsersTable.Arn
 
   OnConnectFunctionArn:
     Description: "OnConnect function ARN"

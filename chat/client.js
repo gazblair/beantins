@@ -1,7 +1,8 @@
 const request = require('request')
 const util = require('util')
-const WebSocket = require('ws')
-
+const WebSocket = require('ws');
+const logger = require('../test/logger');
+let webSocket = null
 const chatUrlRoot = process.env.CHAT_URL_ROOT
 const getCircularReplacer = () => {
     const seen = new WeakSet();
@@ -20,25 +21,26 @@ const getCircularReplacer = () => {
 async function loginUserAwait(phone, callback)
 {
   return new Promise((resolve, reject) => {
-      let webSocket = new WebSocket(chatUrlRoot)
+      webSocket = new WebSocket(chatUrlRoot + "?userId=1234")
 
       webSocket.onopen = (e) => {
-      console.log(JSON.stringify(e))
-      console.log("Opened")
-      webSocket.send("{\"action\":\"sendmessage\", \"data\":\"hello world\"}")
+      console.log("Websocket opened")
+      //webSocket.send("{\"action\":\"sendmessage\", \"data\":\"hello world\"}")
+      resolve()
       }
       
-      webSocket.onerror = (error) => {     
-      webSocket.close()
+      webSocket.onerror = (error) => { 
+        console.log("Websocket error")    
       reject(error)
       }
       
       webSocket.onmessage = (e) => {
-      console.log(JSON.stringify(e, getCircularReplacer()))
+      console.log("Websocket message received")
+      //console.log(JSON.stringify(e, getCircularReplacer()))
       const data = JSON.parse(e.data)
+      
       console.log("Origin message: " + data.receive)
 
-      webSocket.close()
       resolve()
       }
   });
@@ -67,4 +69,18 @@ async function loginUser(phone, callback) {
   callback(responseCode)
 }
 
-module.exports = { loginUser };
+function logoffUser(userId) {
+
+  try {
+    if (webSocket != null)
+    {
+      webSocket.close()
+    }
+  }
+  catch (error) {
+     console.log("websocket failed to close")
+  }
+
+}
+
+module.exports = { loginUser, logoffUser };
