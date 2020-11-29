@@ -1,6 +1,6 @@
 const { Before, BeforeAll, AfterAll, Given, When, Then } = require('cucumber')
 
-const userTableName = "Users_Dev"
+const userTableName = "UserAccounts_Dev"
 const assert = require('assert')
 const client = require('../../client')
 const dynamodbfactory = require('../../registered-users/dynamodb-factory');
@@ -34,7 +34,6 @@ Before('@pending', function(scenario, callback) {
 
 Before(function () {
     return clearUsers()
-    
 });
 
 

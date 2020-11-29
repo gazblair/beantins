@@ -10,7 +10,7 @@ class RegisteredUsersDAO {
     }
 
     buildTableName(){
-        return "Users_" + this.tableSuffix
+        return "UserAccounts_" + this.tableSuffix
     }
     
     async isRegistered(name, phone) {
