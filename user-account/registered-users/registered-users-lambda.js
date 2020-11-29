@@ -4,7 +4,7 @@ const registeredusers = require('./registered-users')
 
 exports.handler = async (event) => {
 
-    const registeredUsers = new registeredusers.RegisteredUsers()
+    const userAccount = new registeredusers.UserAccount()
 
     let result
     try {
@@ -17,10 +17,10 @@ exports.handler = async (event) => {
         {
             case "/login-user/":
                 console.log("prepare to login")
-                result = await registeredUsers.loginUser(user.name, user.phone)
+                result = await userAccount.loginUser(user.name, user.phone)
                 break
             case "/signup-new-user/":
-                result = await registeredUsers.signUpNewUser(user.name, user.phone)
+                result = await userAccount.signUp(user.name, user.phone)
                 break
         }        
     }

@@ -2,7 +2,7 @@
 
 const registeredusersdao = require('./registered-users-dao')
 
-class RegisteredUsers {
+class UserAccount {
 
     constructor() {
         const tableSuffix = process.env.AWS_STAGE
@@ -18,7 +18,7 @@ class RegisteredUsers {
         }
     }
 
-    async signUpNewUser(name, phone){
+    async signUp(name, phone){
         try
         {
             this.checkEligibleForRegistration(name, phone)
@@ -71,5 +71,5 @@ class RegisteredUsers {
 }
 
 module.exports = {
-    RegisteredUsers: RegisteredUsers
+    UserAccount: UserAccount
 }
