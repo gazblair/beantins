@@ -5,7 +5,7 @@ const WebSocket = require('ws')
 const registrationUrlRoot = process.env.REGISTRATION_URL_ROOT 
 const chatUrlRoot = process.env.CHAT_URL_ROOT
 
-async function signupNewUser(name, phone, callback)
+async function signupUser(name, phone, callback)
 {
     requestBody = {}
     requestBody.name = name
@@ -15,7 +15,7 @@ async function signupNewUser(name, phone, callback)
     }
           
     const options = {
-        uri: registrationUrlRoot + 'signup-new-user/',
+        uri: registrationUrlRoot + 'signup-user/',
         method: 'POST',
         json: requestBody
     }
@@ -25,4 +25,4 @@ async function signupNewUser(name, phone, callback)
     callback(response);
 }
 
-module.exports = { signupNewUser };
+module.exports = { signupUser };

@@ -3,34 +3,33 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   app
 
-  Registered Users
+  Signup User
   
 Parameters:
   AppStage:
     Type: String
     Default: Dev 
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 3
 
 Resources:
-  RegisterUserFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  UserAccountFunction:
+    Type: AWS::Serverless::Function 
     Properties:
       Policies: 
         - AmazonDynamoDBFullAccess
         - AWSLambdaBasicExecutionRole    
       AutoPublishAlias: Test
-      CodeUri: registered-users/
-      Handler: registered-users-lambda.handler
+      CodeUri: user-account/
+      Handler: user-account-lambda.handler
       Runtime: nodejs10.x
       Events:
-        SignupNewUser:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        SignupUser:
+          Type: Api 
           Properties:
-            Path: /signup-new-user/
+            Path: /signup-user/
             Method: post
             RestApiId: !Ref WebApi
         LoginUser:
@@ -65,15 +64,12 @@ Resources:
         WriteCapacityUnits: "5"
       TableName: !Sub "UserAccounts_${AppStage}"
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  RegisteredUsersApi:
-    Description: "API Gateway endpoint URL for Registered Users function"
+  UserAccountApi:
+    Description: "API Gateway endpoint URL for User account function"
     Value: !Sub "https://${WebApi}.execute-api.${AWS::Region}.amazonaws.com/${AppStage}/"
-  RegisteredUsersFunction:
-    Description: "Registered Users Lambda Function ARN"
-    Value: !GetAtt RegisterUserFunction.Arn
-  RegisteredUsersFunctionIamRole:
-    Description: "Implicit IAM Role created for Registered Users function"
-    Value: !GetAtt RegisterUserFunctionRole.Arn
+  UserAccountFunction:
+    Description: "User Account Lambda Function ARN"
+    Value: !GetAtt UserAccountFunction.Arn
+  UserAccountFunctionIamRole:
+    Description: "Implicit IAM Role created for User account function"
+    Value: !GetAtt UserAccountFunctionRole.Arn

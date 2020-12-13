@@ -1,12 +1,12 @@
 "use strict"
 
-const registeredusersdao = require('./registered-users-dao')
+const useraccountdao = require('./user-account-dao')
 
 class UserAccount {
 
     constructor() {
         const tableSuffix = process.env.AWS_STAGE
-        this.registeredusersdao = new registeredusersdao.RegisteredUsersDAO(tableSuffix)
+        this.useraccountdao = new useraccountdao.UserAccountDAO(tableSuffix)
     }
 
     buildResponse(status, message) {
@@ -24,7 +24,7 @@ class UserAccount {
             this.checkEligibleForRegistration(name, phone)
 
             await this.checkUserAccountDoesNotExist(name, phone)
-            await this.registeredusersdao.register(name, phone)
+            await this.useraccountdao.register(name, phone)
             return this.buildResponse(201, "user registered")
         }
         catch(err) {
@@ -58,13 +58,13 @@ class UserAccount {
     }
 
     async checkUserAccountExists(name, phone) {
-        if (!await this.registeredusersdao.isRegistered(name, phone)){
+        if (!await this.useraccountdao.isRegistered(name, phone)){
             this.throwException("account does not exist", 403)
         }
     }
 
     async checkUserAccountDoesNotExist(name, phone) {
-        if (await this.registeredusersdao.isRegistered(name, phone)){
+        if (await this.useraccountdao.isRegistered(name, phone)){
             this.throwException("account already exists", 409)
         }
     }

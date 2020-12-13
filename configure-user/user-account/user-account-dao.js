@@ -2,7 +2,7 @@
 
 const dynamodbfactory = require('./dynamodb-factory');
 
-class RegisteredUsersDAO {
+class UserAccountDAO {
     constructor(tableSuffix){
         this.dynamoDB = dynamodbfactory.create()
 
@@ -51,5 +51,5 @@ class RegisteredUsersDAO {
 }
 
 module.exports = {
-    RegisteredUsersDAO: RegisteredUsersDAO
+    UserAccountDAO: UserAccountDAO
 }

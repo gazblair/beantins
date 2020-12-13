@@ -1,8 +1,8 @@
 {
-  "name": "register-user",
+  "name": "user-account",
   "version": "1.0.0",
   "description": "Registers a user of the messenger service",
-  "main": "registeruser.js",
+  "main": "user-account.js",
   "dependencies": {
     "aws-sdk": "^2.596.0"
   },

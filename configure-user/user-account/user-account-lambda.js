@@ -1,10 +1,10 @@
 "use strict"
 
-const registeredusers = require('./registered-users')
+const useraccount = require('./user-account')
 
 exports.handler = async (event) => {
 
-    const userAccount = new registeredusers.UserAccount()
+    const userAccount = new useraccount.UserAccount()
 
     let result
     try {
@@ -19,9 +19,12 @@ exports.handler = async (event) => {
                 console.log("prepare to login")
                 result = await userAccount.loginUser(user.name, user.phone)
                 break
-            case "/signup-new-user/":
+            case "/signup-user/":
                 result = await userAccount.signUp(user.name, user.phone)
                 break
+            default:
+                console.log("Unknown event")
+                result = {'statusCode': 404 }
         }        
     }
     catch(err) {

@@ -3,7 +3,7 @@ const { Before, BeforeAll, AfterAll, Given, When, Then } = require('cucumber')
 const userTableName = "UserAccounts_Dev"
 const assert = require('assert')
 const client = require('../../client')
-const dynamodbfactory = require('../../registered-users/dynamodb-factory');
+const dynamodbfactory = require('../../user-account/dynamodb-factory');
 const sessionFactory = require('../../../test/session-factory')
 const logger=require('../../../test/logger')
 
@@ -56,8 +56,8 @@ Given('I am not registered', function () {
 });
 
 Given('I have already registered as {} and my phone number is {}', function (name, phone) {
-    let register = client.signupNewUser(name, phone, response => {
-        logger.verbose("Signup new user has response - " + JSON.stringify(response))
+    let register = client.signupUser(name, phone, response => {
+        logger.verbose("Signup user has response - " + JSON.stringify(response))
         this.httpResponseCode = response.statusCode;
         this.message = response.body;
     });
@@ -76,8 +76,8 @@ When('I enter my phone as {}', function (phone) {
 });
 
 When('I register as a new user', function () {
-    let register = client.signupNewUser(this.name, this.phone, response => {
-        logger.verbose("Signup new user has response - " + response)        
+    let register = client.signupUser(this.name, this.phone, response => {
+        logger.verbose("Signup user has response - " + response)        
         this.httpResponseCode = response.statusCode;
         this.message = response.body.message;
     });
