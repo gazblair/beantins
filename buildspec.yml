@@ -17,7 +17,8 @@ phases:
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
-      - ./configure-user/build
+      - cd configure-user
+      - ./build
   post_build:
     commands:
       # Do not remove this statement. This command is required for AWS CodeStar projects.
@@ -26,5 +27,5 @@ phases:
 
 artifacts:
   files:
-    - user-account.yaml
+    - configure-user/user-account.yaml
     - template-configuration.json
