@@ -19,6 +19,7 @@ phases:
       # Use AWS SAM to package the application by using AWS CloudFormation
       - cd configure-user
       - sam build
+      - cd ..
 
   post_build:
     commands:
@@ -30,4 +31,4 @@ phases:
 artifacts:
   files:
     - configure-user/user-account.yaml
-    - configure-user/template-configuration.json
+    - template-configuration.json
