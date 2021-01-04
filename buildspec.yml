@@ -30,4 +30,4 @@ phases:
 artifacts:
   files:
     - configure-user/user-account.yaml
-    - template-configuration.json
+    - configure-user/template-configuration.json
