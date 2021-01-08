@@ -9,6 +9,12 @@ Parameters:
   AppStage:
     Type: String
     Default: Dev 
+  ProjectId:
+    Type: String
+    Description: AWS CodeStar projectID used to associate new resources to team members
+  CodeDeployRole:
+    Type: String
+    Description: IAM role to allow AWS CodeDeploy to manage deployment of AWS Lambda functions
 
 Globals:
   Function:
