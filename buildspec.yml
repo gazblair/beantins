@@ -28,5 +28,5 @@ phases:
 
 artifacts:
   files:
-    - configure-user/user-account.yaml
+    - "configure-user/user-account.yaml"
     - template-configuration.json
