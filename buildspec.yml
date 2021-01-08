@@ -17,7 +17,7 @@ phases:
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
-      - sam package --template-file configure-user/template.yml --s3-bucket beantins --output-template-file user-account.yaml
+      - sam package --template-file "configure-user/template.yml" --s3-bucket beantins --output-template-file user-account.yaml
       # - sam build
 
   post_build:
