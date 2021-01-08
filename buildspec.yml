@@ -17,15 +17,13 @@ phases:
   build:
     commands:
       # Use AWS SAM to package the application by using AWS CloudFormation
-      - cd configure-user
-      - sam build
-      - cd ..
+      - sam package --template-file configure-user/template.yml --s3-bucket beantins --output-template-file user-account.yaml
+      # - sam build
 
   post_build:
     commands:
       # Do not remove this statement. This command is required for AWS CodeStar projects.
       # Update the AWS Partition, AWS Region, account ID and project ID in the project ARN on template-configuration.json file so AWS CloudFormation can tag project resources.
-      # - sam package --s3-bucket beantins --output-template-file user-account.yaml
       - sed -i.bak 's/\$PARTITION\$/'${PARTITION}'/g;s/\$AWS_REGION\$/'${AWS_REGION}'/g;s/\$ACCOUNT_ID\$/'${ACCOUNT_ID}'/g;s/\$PROJECT_ID\$/'${PROJECT_ID}'/g' template-configuration.json
 
 artifacts:
