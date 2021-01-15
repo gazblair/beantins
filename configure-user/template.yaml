@@ -26,7 +26,8 @@ Resources:
     Properties:
       Policies: 
         - AmazonDynamoDBFullAccess
-        - AWSLambdaBasicExecutionRole    
+        - AWSLambdaBasicExecutionRole  
+        - AmazonS3FullAccess  
       AutoPublishAlias: Test
       CodeUri: user-account/
       Handler: user-account-lambda.handler
