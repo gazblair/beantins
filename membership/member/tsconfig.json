@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "types" : [ "node", "jest" ],
+      "moduleResolution": "node",
+      "module": "CommonJS",
+      "target": "es6",
+      "outDir": "dist",
+      "strict": true,
+      "skipLibCheck": true
+    },
+    "include": ["member-lambda.js", "**/*"],
+    "exclude": [
+      "node_modules", "node_modules/jest-dynalite/index.js"
+      ]
+  }

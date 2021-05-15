@@ -1,0 +1,1 @@
+sam logs -n MemberFunction --stack-name BeanTinsMember --tail
