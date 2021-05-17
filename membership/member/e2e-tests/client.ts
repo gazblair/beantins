@@ -2,7 +2,7 @@ const fs = require('fs');
 const got = require('got')
 import logger from './logger'
 
-export async function signupMember(name: string, email: string)
+export async function signupMember(name: string | null, email: string | null)
 {
     let responseBody: any = {}
     let requestBody: any = {}

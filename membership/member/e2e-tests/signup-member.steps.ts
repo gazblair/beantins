@@ -5,8 +5,8 @@ import logger from './logger'
 import { StepDefinitions } from 'jest-cucumber';
 import { signupMember } from './client';
 
-let name: string
-let email: string
+let name: string | null
+let email: string | null
 let responseCode: number
 let responseMessage: string
 
@@ -50,8 +50,8 @@ export const signupMemberSteps: StepDefinitions = ({ given, and, when, then }) =
 }
 
 beforeEach(async () => {
-  name = ""
-  email = ""
+  name = null
+  email = null
   await clearMembers()
 });
 
