@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Membership configuration for beantins
+Parameters:
+  AppStage:
+    Type: String
+    Default: Dev 
+  ProjectId:
+    Type: String
+    Description: AWS CodeStar projectID used to associate new resources to team members
+    Default: DevBuild
+  CodeDeployRole:
+    Type: String
+    Description: IAM role to allow AWS CodeDeploy to manage deployment of AWS Lambda functions
+    Default: MemberFunctionIamRole
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  MemberFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      Policies: 
+        - AmazonDynamoDBFullAccess
+        - AWSLambdaBasicExecutionRole  
+        - AmazonS3FullAccess  
+      AutoPublishAlias: Test
+      CodeUri: ./
+      Handler: dist/member-lambda.handler
+      Runtime: nodejs14.x
+      Events:
+        SignupMember:
+          Type: Api 
+          Properties:
+            Path: /signup-member/
+            Method: post
+            RestApiId: !Ref WebApi
+      Environment:
+        Variables:
+          AWS_STAGE: { Ref: "AppStage" }
+          DYNAMODB_ENDPOINT: "null" 
+  WebApi:
+    Type: AWS::Serverless::Api
+    Properties: 
+      StageName: !Ref AppStage 
+  DynamoDBTable: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - AttributeName: "Name"
+          AttributeType: "S"
+        - AttributeName: "Email"
+          AttributeType: "S"
+      KeySchema: 
+        - AttributeName: "Email"
+          KeyType: "HASH"
+        - AttributeName: "Name"
+          KeyType: "RANGE"          
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+      TableName: !Sub "Member_${AppStage}"
+Outputs:
+  MemberApi:
+    Description: "API Gateway endpoint URL for Member configuration function"
+    Value: !Sub "https://${WebApi}.execute-api.${AWS::Region}.amazonaws.com/${AppStage}/"
+  MemberFunction:
+    Description: "Member Lambda Function ARN"
+    Value: !GetAtt MemberFunction.Arn
+  MemberFunctionIamRole:
+    Description: "Implicit IAM Role created for Member account function"
+    Value: !GetAtt MemberFunctionRole.Arn

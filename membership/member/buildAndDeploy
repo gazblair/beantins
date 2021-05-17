@@ -1,6 +1,15 @@
 set -e
 ./build
-sam deploy --template-file user.yaml --stack-name BeanTinsMember --capabilities CAPABILITY_IAM
+result="$(sam deploy --template-file member.yaml --stack-name BeanTinsMember --capabilities CAPABILITY_IAM 2>&1)"
 
+echo $result
 
+lambdaUriPattern='https[^ ]+'
+
+if [[ $result =~ $lambdaUriPattern ]]; then
+    lambdaUri="${BASH_REMATCH[0]}"
+
+    lambdaUriFileContent="{\"Uri\": \"${lambdaUri}\"}"
+    echo $lambdaUriFileContent > "e2e-tests/signup-lambda.json"
+fi
 
