@@ -1,4 +1,5 @@
 node_modules/
+**/dist/
 infrastructure/development_environment/.vagrant/
 **/*.vdi
 .aws-sam/
