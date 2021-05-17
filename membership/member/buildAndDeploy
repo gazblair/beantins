@@ -1,0 +1,6 @@
+set -e
+./build
+sam deploy --template-file user.yaml --stack-name BeanTinsMember --capabilities CAPABILITY_IAM
+
+
+
