@@ -18,7 +18,7 @@
   "devDependencies": {
     "cucumber": "^5.1.0",
     "dockerode": "^3.2.0",
-    "grunt": "^1.0.4",
+    "grunt": "^1.5.3",
     "socket.io-client": "^2.3.0",
     "winston": "^3.2.1"
   }
